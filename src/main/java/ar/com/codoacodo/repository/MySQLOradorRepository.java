@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,7 +23,7 @@ public class MySQLOradorRepository implements OradorRepository {
 			statement.setString(2, orador.getApellido());
 			statement.setString(3, orador.getMail());
 			statement.setString(4, orador.getTema());
-			statement.setDate(5, new java.sql.Date(System.currentTimeMillis())); //tph: ver como pasar de LocalDate a java.sql.Date
+			statement.setDate(5, Date.valueOf(orador.getFechaAlta()));
 			
 			statement.executeUpdate();//INSERT,UPDATE,DELETE
 		}catch (Exception e) {
@@ -53,7 +52,7 @@ public class MySQLOradorRepository implements OradorRepository {
 				String email = res.getString(5);
 				Date fechaAlta = res.getDate(6);
 				
-				orador = new Orador(id,nombre, apellido, email, tema, LocalDate.now());/*tph fechaAlta de java.sql.Date a LocalDate*/
+				orador = new Orador(id,nombre, apellido, email, tema, fechaAlta.toLocalDate());
 			}
 		}catch (Exception e) {
 			throw new IllegalArgumentException("No se pudo obtener el orador", e);
@@ -114,7 +113,7 @@ public class MySQLOradorRepository implements OradorRepository {
 				String email = res.getString(5);
 				Date fechaAlta = res.getDate(6);
 				
-				Orador orador = new Orador(_id,nombre, apellido, email, tema, LocalDate.now());/*tph fechaAlta de java.sql.Date a LocalDate*/
+				Orador orador = new Orador(_id,nombre, apellido, email, tema,fechaAlta.toLocalDate());
 				oradores.add(orador);
 			}
 		}catch (Exception e) {
@@ -123,6 +122,4 @@ public class MySQLOradorRepository implements OradorRepository {
 		
 		return oradores;
 	}
-
-	//implementar todos los metodos de la interface
 }
