@@ -13,7 +13,7 @@ import ar.com.codoacodo.entity.Orador;
 public class MySQLOradorRepository implements OradorRepository {
 
 	public void save(Orador orador) {
-		String sql = "insert into orador (nombre,apellido,email,tema,fecha_alta) values(?,?,?,?,?)";
+		String sql = "insert into orador (nombre,apellido,mail,tema,fecha_alta) values(?,?,?,?,?)";
 		
 		try(Connection conn = AdministradorDeConexiones.getConnection()) {
 			//sql injection!!!
@@ -33,7 +33,7 @@ public class MySQLOradorRepository implements OradorRepository {
 	}
 
 	public Orador getById(Long id) {
-		String sql = "select id, nombre, apellido, tema, email, fecha_alta from orador where id = ?";
+		String sql = "select id, nombre, apellido, tema, mail, fecha_alta from orador where id = ?";
 		
 		Orador orador = null;
 		try(Connection conn = AdministradorDeConexiones.getConnection()) {
@@ -64,7 +64,7 @@ public class MySQLOradorRepository implements OradorRepository {
 	@Override
 	public void update(Orador orador) {
 		String sql = "update orador "
-				+ "set nombre=?, apellido=?, tema=?, email=?"
+				+ "set nombre=?, apellido=?, tema=?, mail=?"
 				+ "where id = ?";
 		//try with resource
 		try(Connection conn = AdministradorDeConexiones.getConnection()) {
@@ -96,7 +96,7 @@ public class MySQLOradorRepository implements OradorRepository {
 
 	@Override
 	public List<Orador> findAll() {
-		String sql = "select id, nombre, apellido, tema, email, fecha_alta from orador";
+		String sql = "select id, nombre, apellido, tema, mail, fecha_alta from orador";
 		
 		List<Orador> oradores = new ArrayList<>();//ver bien power en Spring!
 		try(Connection conn = AdministradorDeConexiones.getConnection()) {
