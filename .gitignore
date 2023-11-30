@@ -51,3 +51,6 @@ local.properties
 
 #intellij
 .idea/
+
+# Config files
+*.properties
