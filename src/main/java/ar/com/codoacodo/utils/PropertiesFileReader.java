@@ -12,10 +12,12 @@ public class PropertiesFileReader {
     private static void loadPropValues() throws IOException {
         prop = new Properties();
         InputStream inputStream = PropertiesFileReader.class.getClassLoader().getResourceAsStream(propFileName);
-        prop.load(inputStream);
+
         if (inputStream == null) {
             throw new FileNotFoundException("property file '" + propFileName + "' not found in the classpath");
         }
+
+        prop.load(inputStream);
     }
 
     public static String getValue(String key) throws IOException {

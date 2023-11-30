@@ -24,7 +24,7 @@ public class AdministradorDeConexiones {
 			return DriverManager.getConnection(dbUrl, username, password);
 
 		}catch (IOException e) {
-			throw new RuntimeException(e);
+			throw new RuntimeException("No se pudo leer el archivo de configuracion", e);
 		}
 		catch (Exception e) {
 			throw new IllegalArgumentException("No se pudo establecer la conexion a la base de datos", e);
