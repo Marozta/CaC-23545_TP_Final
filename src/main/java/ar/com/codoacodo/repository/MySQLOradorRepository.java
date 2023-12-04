@@ -24,8 +24,12 @@ public class MySQLOradorRepository implements OradorRepository {
 			statement.setString(3, orador.getMail());
 			statement.setString(4, orador.getTema());
 			statement.setDate(5, Date.valueOf(orador.getFechaAlta()));
-			
-			statement.executeUpdate();//INSERT,UPDATE,DELETE
+			statement.executeUpdate();
+			ResultSet res = statement.getGeneratedKeys();
+
+			if (res.next())
+				orador.setId(res.getLong(1));
+
 		}catch (Exception e) {
 			throw new IllegalArgumentException("No se pudo crear el orador",e);
 		}
