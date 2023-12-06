@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +13,7 @@ import ar.com.codoacodo.entity.Orador;
 public class MySQLOradorRepository implements OradorRepository {
 
 	public void save(Orador orador) {
-		String sql = "insert into orador (nombre,apellido,mail,tema,fecha_alta) values(?,?,?,?,?)";
+		String sql = "insert into orador (nombre,apellido,email,tema,fecha_alta) values(?,?,?,?,?)";
 		
 		try(Connection conn = AdministradorDeConexiones.getConnection()) {
 			//sql injection!!!
@@ -23,20 +24,16 @@ public class MySQLOradorRepository implements OradorRepository {
 			statement.setString(2, orador.getApellido());
 			statement.setString(3, orador.getMail());
 			statement.setString(4, orador.getTema());
-			statement.setDate(5, Date.valueOf(orador.getFechaAlta()));
-			statement.executeUpdate();
-			ResultSet res = statement.getGeneratedKeys();
-
-			if (res.next())
-				orador.setId(res.getLong(1));
-
+			statement.setDate(5, new java.sql.Date(System.currentTimeMillis())); //tph: ver como pasar de LocalDate a java.sql.Date
+			
+			statement.executeUpdate();//INSERT,UPDATE,DELETE
 		}catch (Exception e) {
 			throw new IllegalArgumentException("No se pudo crear el orador",e);
 		}
 	}
 
 	public Orador getById(Long id) {
-		String sql = "select id, nombre, apellido, tema, mail, fecha_alta from orador where id = ?";
+		String sql = "select id, nombre, apellido, tema, email, fecha_alta from orador where id = ?";
 		
 		Orador orador = null;
 		try(Connection conn = AdministradorDeConexiones.getConnection()) {
@@ -56,7 +53,7 @@ public class MySQLOradorRepository implements OradorRepository {
 				String email = res.getString(5);
 				Date fechaAlta = res.getDate(6);
 				
-				orador = new Orador(id,nombre, apellido, email, tema, fechaAlta.toLocalDate());
+				orador = new Orador(id,nombre, apellido, email, tema, LocalDate.now());/*tph fechaAlta de java.sql.Date a LocalDate*/
 			}
 		}catch (Exception e) {
 			throw new IllegalArgumentException("No se pudo obtener el orador", e);
@@ -67,7 +64,7 @@ public class MySQLOradorRepository implements OradorRepository {
 	@Override
 	public void update(Orador orador) {
 		String sql = "update orador "
-				+ "set nombre=?, apellido=?, tema=?, mail=?"
+				+ "set nombre=?, apellido=?, tema=?, email=?"
 				+ "where id = ?";
 		//try with resource
 		try(Connection conn = AdministradorDeConexiones.getConnection()) {
@@ -99,7 +96,7 @@ public class MySQLOradorRepository implements OradorRepository {
 
 	@Override
 	public List<Orador> findAll() {
-		String sql = "select id, nombre, apellido, tema, mail, fecha_alta from orador";
+		String sql = "select id, nombre, apellido, tema, email, fecha_alta from orador";
 		
 		List<Orador> oradores = new ArrayList<>();//ver bien power en Spring!
 		try(Connection conn = AdministradorDeConexiones.getConnection()) {
@@ -117,7 +114,7 @@ public class MySQLOradorRepository implements OradorRepository {
 				String email = res.getString(5);
 				Date fechaAlta = res.getDate(6);
 				
-				Orador orador = new Orador(_id,nombre, apellido, email, tema,fechaAlta.toLocalDate());
+				Orador orador = new Orador(_id,nombre, apellido, email, tema, LocalDate.now());/*tph fechaAlta de java.sql.Date a LocalDate*/
 				oradores.add(orador);
 			}
 		}catch (Exception e) {
@@ -126,4 +123,6 @@ public class MySQLOradorRepository implements OradorRepository {
 		
 		return oradores;
 	}
+
+	//implementar todos los metodos de la interface
 }
